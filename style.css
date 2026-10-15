@@ -1,0 +1,508 @@
+:root {
+    --primary: #22c55e;
+    --secondary: #0ea5e9;
+    --accent: #f59e0b;
+    --danger: #ef4444;
+    --bg-gradient: linear-gradient(135deg, #064e3b 0%, #0f172a 60%, #1e1b4b 100%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Fredoka', sans-serif;
+    background: var(--bg-gradient);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+}
+
+.game-wrapper {
+    width: 100%;
+    max-width: 650px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+/* --- BARRA SUPERIOR --- */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+.version-badge {
+    background: linear-gradient(135deg, #22c55e, #0ea5e9);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* --- ROBOT 3D (VERDE ESMERALDA PARA MATES) --- */
+.mascot-stage {
+    perspective: 800px;
+    height: 115px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.robot-3d {
+    width: 95px;
+    height: 90px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: float3d 3s ease-in-out infinite;
+    cursor: pointer;
+}
+
+@keyframes float3d {
+    0%, 100% { transform: translateY(0px) rotateX(5deg) rotateY(-8deg); }
+    50% { transform: translateY(-8px) rotateX(-5deg) rotateY(8deg); }
+}
+
+.robot-head {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #34d399, #059669);
+    border-radius: 22px;
+    border: 3px solid #a7f3d0;
+    box-shadow: 0 8px 0 #065f46, 0 15px 20px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.robot-antenna {
+    position: absolute;
+    top: -16px;
+    width: 6px;
+    height: 14px;
+    background: #94a3b8;
+}
+.robot-antenna::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    width: 16px;
+    height: 16px;
+    background: #f59e0b;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #f59e0b;
+}
+
+.robot-ear {
+    position: absolute;
+    top: 28px;
+    width: 10px;
+    height: 24px;
+    background: #065f46;
+    border-radius: 5px;
+}
+.robot-ear.left { left: -10px; }
+.robot-ear.right { right: -10px; }
+
+.robot-screen {
+    width: 82%;
+    height: 68%;
+    background: #0f172a;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.eyes-row { display: flex; gap: 16px; }
+.eye {
+    width: 13px;
+    height: 17px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4ade80;
+    animation: blinkEye 4s infinite;
+}
+@keyframes blinkEye {
+    0%, 94%, 98% { transform: scaleY(1); }
+    96% { transform: scaleY(0.1); }
+}
+
+.mouth { display: flex; gap: 3px; height: 12px; align-items: center; }
+.mouth-bar { width: 4px; height: 4px; background: #4ade80; border-radius: 2px; }
+
+.robot-3d.speaking .mouth-bar:nth-child(odd) { animation: talk 0.2s infinite alternate; }
+.robot-3d.speaking .mouth-bar:nth-child(even) { animation: talk 0.25s infinite alternate 0.1s; }
+
+@keyframes talk {
+    0% { height: 4px; }
+    100% { height: 14px; background: #fde047; }
+}
+
+/* --- BOCADILLO DEL ROBOT --- */
+.speech-bubble {
+    background: rgba(15, 23, 42, 0.85);
+    border: 2px solid #34d399;
+    border-radius: 16px;
+    padding: 12px 15px;
+    text-align: center;
+    font-size: 0.98rem;
+    line-height: 1.4;
+    margin-bottom: 14px;
+    color: #ecfdf5;
+}
+
+/* --- SELECTOR DE MÉTODOS --- */
+.section-label {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.method-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.method-btn {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid transparent;
+    color: #e2e8f0;
+    padding: 10px 6px;
+    border-radius: 14px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.method-btn small {
+    font-weight: 400;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.method-btn.active {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: #4ade80;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+}
+.method-btn.active small { color: #dcfce7; }
+
+.method-guide {
+    background: rgba(245, 158, 11, 0.12);
+    border-left: 4px solid var(--accent);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 14px;
+    line-height: 1.4;
+    color: #fef3c7;
+}
+
+/* --- LIBRETA CUADRICULADA DE LÁPIZ --- */
+.notebook-card {
+    background: #fefce8;
+    color: #1e293b;
+    border-radius: 20px;
+    padding: 16px;
+    border: 4px solid #cbd5e1;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.08);
+    /* Efecto hoja cuadriculada */
+    background-image: 
+        linear-gradient(to right, rgba(59, 130, 246, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(59, 130, 246, 0.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+.notebook-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #334155;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.level-controls { display: flex; gap: 6px; }
+.lvl-btn {
+    background: #e2e8f0;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    color: #475569;
+}
+.lvl-btn.active { background: #3b82f6; color: #fff; }
+
+.step-indicator {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+    border: 1px solid #93c5fd;
+}
+
+/* --- REJILLA DE LA RESTA --- */
+.math-grid {
+    display: grid;
+    grid-template-columns: 40px repeat(3, 68px);
+    justify-content: center;
+    gap: 4px;
+    margin: 10px auto 16px;
+}
+
+.math-grid.two-digits {
+    grid-template-columns: 40px repeat(2, 75px);
+}
+.math-grid.two-digits .c-col {
+    display: none;
+}
+
+.grid-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.col-header {
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 4px;
+    border-radius: 8px;
+    color: white;
+}
+.u-col { background: #3b82f6; }
+.d-col { background: #ef4444; }
+.c-col.col-header { background: #10b981; }
+
+.carry-top {
+    height: 32px;
+}
+
+.carry-bubble {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #dc2626;
+    background: #fee2e2;
+    border: 2px dashed #ef4444;
+    border-radius: 8px;
+    padding: 1px 6px;
+    display: none;
+}
+.carry-bubble.visible { display: inline-block; animation: popIn 0.3s ease; }
+
+.number-cell {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    height: 55px;
+    color: #0f172a;
+}
+
+/* Efecto tachado rojo de lápiz cuando el vecino presta */
+.crossed-out {
+    text-decoration: line-through;
+    text-decoration-color: #ef4444;
+    text-decoration-thickness: 4px;
+    color: #94a3b8;
+}
+
+.sign-cell {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ef4444;
+}
+
+.carry-bottom {
+    font-size: 1.15rem;
+    color: #dc2626;
+    font-weight: 700;
+    margin-left: 4px;
+    background: #fef2f2;
+    border: 1px solid #f87171;
+    border-radius: 6px;
+    padding: 0 4px;
+    display: none;
+}
+.carry-bottom.visible { display: inline-block; animation: popIn 0.3s ease; }
+
+@keyframes popIn {
+    0% { transform: scale(0.3); }
+    100% { transform: scale(1); }
+}
+
+.grid-line {
+    grid-column: 1 / -1;
+    height: 4px;
+    background: #1e293b;
+    border-radius: 2px;
+    margin: 4px 0 8px;
+}
+
+.digit-input {
+    width: 62px;
+    height: 62px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-align: center;
+    border: 3px solid #cbd5e1;
+    border-radius: 12px;
+    background: #fff;
+    color: #0f172a;
+    outline: none;
+    cursor: pointer;
+}
+
+.digit-input.active-col {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.digit-input.correct-col {
+    border-color: #22c55e;
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* --- BOTONES DE LÁPIZ Y PISTAS --- */
+.pencil-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.btn-pencil {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #b91c1c;
+    transition: transform 0.1s;
+}
+.btn-pencil:active { transform: translateY(2px); }
+
+.btn-hint {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #b45309;
+}
+
+/* --- TECLADO NUMÉRICO --- */
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 380px;
+    margin: 0 auto 12px;
+}
+
+.num-key {
+    background: #1e293b;
+    color: #fff;
+    border: none;
+    padding: 12px 0;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #0f172a;
+    transition: all 0.1s;
+}
+.num-key:hover { background: #3b82f6; }
+.num-key:active { transform: translateY(2px); }
+
+.feedback-msg {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    min-height: 26px;
+    margin-bottom: 10px;
+}
+
+.bottom-controls { text-align: center; }
+.btn-new {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #047857;
+}
+
+.nav-container { text-align: center; margin-top: 16px; }
+.btn-nav {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.version-footer {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}

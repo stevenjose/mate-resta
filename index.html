@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="page-title">Robo-Mate - Restas Llevando</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="game-wrapper">
+      <!-- Cabecera y Versión -->
+      <div class="top-bar">
+        <div class="badge">⭐ Puntos: <span id="score">0</span></div>
+        <div class="version-badge" onclick="announceVersion()">
+          🚀 <span id="version-badge-text">v--</span>
+        </div>
+        <div class="badge">✏️ Reto: <span id="streak">1</span></div>
+      </div>
+
+      <!-- MUÑECO 3D (ROBO-MATE) -->
+      <div class="mascot-stage">
+        <div class="robot-3d" id="robo-mate" onclick="robotSalute()">
+          <div class="robot-antenna"></div>
+          <div class="robot-ear left"></div>
+          <div class="robot-ear right"></div>
+          <div class="robot-head">
+            <div class="robot-screen">
+              <div class="eyes-row">
+                <div class="eye"></div>
+                <div class="eye"></div>
+              </div>
+              <div class="mouth">
+                <div class="mouth-bar"></div>
+                <div class="mouth-bar"></div>
+                <div class="mouth-bar"></div>
+                <div class="mouth-bar"></div>
+                <div class="mouth-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOCADILLO DE VOZ DEL ROBOT -->
+      <div class="speech-bubble" id="robot-speech">
+        ¡Hola! Soy <strong>Robo-Mate</strong>. Elige arriba el método de resta
+        que más te guste y resolvamos juntos en la libreta paso a paso.
+      </div>
+
+      <!-- SELECTOR DE MÉTODOS DE ENSEÑANZA -->
+      <div class="section-label">1. Elige tu método favorito:</div>
+      <div class="method-selector">
+        <button class="method-btn active" onclick="setMethod('NEIGHBOR', this)">
+          🏠 Vecino Presta<br /><small>(Tachar arriba)</small>
+        </button>
+        <button class="method-btn" onclick="setMethod('CARRY_DOWN', this)">
+          ⬇️ Llevada Abajo<br /><small>(Sumar al de abajo)</small>
+        </button>
+        <button class="method-btn" onclick="setMethod('STAIRS', this)">
+          🪜 La Escalera<br /><small>(Contar hasta llegar)</small>
+        </button>
+      </div>
+
+      <!-- EXPLICACIÓN DINÁMICA DEL MÉTODO ELEGIDO -->
+      <div class="method-guide" id="method-explanation">
+        <!-- Rellenado desde main.js -->
+      </div>
+
+      <!-- LIBRETA INTERACTIVA (PIZARRA DE CUADRÍCULA) -->
+      <div class="notebook-card">
+        <div class="notebook-header">
+          <span>📓 Cuaderno de Lápiz Interactivo</span>
+          <div class="level-controls">
+            <button class="lvl-btn active" onclick="setDigits(2, this)">
+              2 Cifras
+            </button>
+            <button class="lvl-btn" onclick="setDigits(3, this)">
+              3 Cifras
+            </button>
+          </div>
+        </div>
+
+        <!-- Paso actual guiado -->
+        <div class="step-indicator" id="step-prompt">
+          👉 Paso 1: Empezamos siempre por las <strong>UNIDADES (U)</strong>
+        </div>
+
+        <!-- Rejilla de Resta Vertical como en papel -->
+        <div class="math-grid" id="math-grid">
+          <!-- Encabezados C | D | U -->
+          <div class="grid-cell header-empty"></div>
+          <div class="grid-cell col-header c-col" id="head-c">C</div>
+          <div class="grid-cell col-header d-col">D</div>
+          <div class="grid-cell col-header u-col">U</div>
+
+          <!-- Fila de Llevadas / Tachados Superiores (Para método Vecino) -->
+          <div class="grid-cell"></div>
+          <div class="grid-cell carry-top c-col">
+            <span class="carry-bubble" id="top-carry-c"></span>
+          </div>
+          <div class="grid-cell carry-top">
+            <span class="carry-bubble" id="top-carry-d"></span>
+          </div>
+          <div class="grid-cell carry-top">
+            <span class="carry-bubble" id="top-carry-u"></span>
+          </div>
+
+          <!-- Fila Minuendo (Número de arriba) -->
+          <div class="grid-cell"></div>
+          <div class="grid-cell number-cell c-col" id="min-c"></div>
+          <div class="grid-cell number-cell" id="min-d"></div>
+          <div class="grid-cell number-cell" id="min-u"></div>
+
+          <!-- Fila Sustraendo (Número de abajo + Llevadas abajo) -->
+          <div class="grid-cell sign-cell">−</div>
+          <div class="grid-cell number-cell c-col">
+            <span id="sub-c"></span>
+            <sub class="carry-bottom" id="bot-carry-c"></sub>
+          </div>
+          <div class="grid-cell number-cell">
+            <span id="sub-d"></span>
+            <sub class="carry-bottom" id="bot-carry-d"></sub>
+          </div>
+          <div class="grid-cell number-cell">
+            <span id="sub-u"></span>
+          </div>
+
+          <!-- Línea divisoria de la resta -->
+          <div class="grid-line"></div>
+
+          <!-- Fila de Resultados (Inputs por columna) -->
+          <div class="grid-cell"></div>
+          <div class="grid-cell c-col">
+            <input
+              type="number"
+              id="ans-c"
+              class="digit-input"
+              placeholder="?"
+              readonly
+              onclick="focusCol('c')"
+            />
+          </div>
+          <div class="grid-cell">
+            <input
+              type="number"
+              id="ans-d"
+              class="digit-input"
+              placeholder="?"
+              readonly
+              onclick="focusCol('d')"
+            />
+          </div>
+          <div class="grid-cell">
+            <input
+              type="number"
+              id="ans-u"
+              class="digit-input active-col"
+              placeholder="?"
+              readonly
+              onclick="focusCol('u')"
+            />
+          </div>
+        </div>
+
+        <!-- BOTÓN DE ACCIÓN DE LÁPIZ (Aparece cuando hay que llevar) -->
+        <div class="pencil-actions">
+          <button
+            class="btn-pencil"
+            id="btn-carry"
+            onclick="applyCarryAction()"
+          >
+            ✏️ Hacer la llevada con el lápiz
+          </button>
+          <button class="btn-hint" onclick="explainCurrentStep()">
+            🔊 ¡Explícame este paso!
+          </button>
+        </div>
+
+        <!-- TECLADO NUMÉRICO PARA NIÑOS (Para no depender del teclado del móvil) -->
+        <div class="numpad">
+          <button class="num-key" onclick="pressNum(1)">1</button>
+          <button class="num-key" onclick="pressNum(2)">2</button>
+          <button class="num-key" onclick="pressNum(3)">3</button>
+          <button class="num-key" onclick="pressNum(4)">4</button>
+          <button class="num-key" onclick="pressNum(5)">5</button>
+          <button class="num-key" onclick="pressNum(6)">6</button>
+          <button class="num-key" onclick="pressNum(7)">7</button>
+          <button class="num-key" onclick="pressNum(8)">8</button>
+          <button class="num-key" onclick="pressNum(9)">9</button>
+          <button class="num-key" onclick="pressNum(0)">0</button>
+        </div>
+
+        <div class="feedback-msg" id="feedback"></div>
+
+        <div class="bottom-controls">
+          <button class="btn-new" onclick="generateNewSubtraction()">
+            🔄 Otra Resta Nueva
+          </button>
+        </div>
+      </div>
+
+      <div class="nav-container">
+        <a href="https://stevenjose.github.io/3ro-primaria/" class="btn-nav"
+          >⬅️ Volver al Portal Principal</a
+        >
+      </div>
+
+      <div class="version-footer">
+        <span
+          >🤖 Robo-Mate —
+          <strong
+            >Versión <span id="version-footer-text">--</span></strong
+          ></span
+        >
+        <span>•</span>
+        <span>Creado por José Gregorio López</span>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
